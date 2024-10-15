@@ -10,49 +10,6 @@ The link should be clickable within 5 seconds and then enjoy!
 
 FAQ:
 Q: How does this work?
-A: We found a big WebKit exploit that allows files to be modified inside systems that have the vuln.
-
-Q: Is this legal?
-A: No, modifying systems without permission may violate terms of service and could be illegal in certain countries.
-
-Q: Will this void my warranty?
-A: Yes, using exploits or modding your device can void any warranties provided by the manufacturer.
-
-Q: Can my device get bricked?
-A: There is always a risk of bricking your device when using exploits, especially on consoles.
-
-Q: Is this detectable by anti-cheat software?
-A: Some mods might be detected by anti-cheat systems like Battleye or EasyAntiCheat, so use at your own risk.
-
-Q: What devices are supported?
-A: This works on devices that have a WebKit vulnerability, including iOS devices, PlayStations, and certain consoles.
-
-Q: How long does the jailbreak process take?
-A: It typically takes about 5-10 minutes to complete, depending on the device and payload size.
-
-Q: Can I undo the jailbreak or mods?
-A: Yes, in most cases you can restore your device to its original state, but it may require a factory reset.
-
-Q: Will this affect my online accounts?
-A: It’s possible. Some modded devices or accounts may be banned from online services, so proceed with caution.
-
-Q: Can I use this on the latest firmware?
-A: It depends on the specific exploit. Some newer firmware versions may have patched the vulnerability.
-
-These questions mimic the format you provided, offering clear and direct answers regarding the jailbreak and modification process. Let me know if you need any additional questions or adjustments!
-
-
-
-
-
-
-You said:
-no make them all positive
-ChatGPT said:
-ChatGPT
-Here’s a revised list of 10 questions with positive answers, keeping the format you requested:
-
-Q: How does this work?
 A: We found a big WebKit exploit that allows files to be modified inside systems that have the vulnerability, giving you full control.
 
 Q: Is this legal?

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jailbreak & Mod Menu Center</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #00ff00;
+        }
+        .loading-container {
+            display: none; /* Hidden initially */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-container.active {
+            display: flex; /* Show when activated */
+        }
+        .loading-circle {
+            border: 10px solid rgba(255, 255, 255, 0.2);
+            border-top: 10px solid #00ff00;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1.5s linear infinite;
+            margin-bottom: 20px;
+            z-index: 2;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .code-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            font-family: "Courier New", Courier, monospace;
+            color: #00ff00;
+            overflow: hidden;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            padding: 10px;
+            z-index: 1; /* Behind the loading circle */
+        }
+        #code {
+            position: absolute;
+            top: 100%;
+            white-space: pre-line;
+            overflow-y: hidden;
+        }
+        #payload-message {
+            display: none;
+            color: #00ff00;
+            font-size: 2rem;
+            z-index: 2;
+        }
+        .device-selection, .game-selection, .anticheat-selection {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            margin: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #007f00;
+        }
+        #cancel-button, #exit-button {
+            display: none;
+            background-color: #ff0000;
+            color: white;
+        }
+        #exit-button {
+            background-color: #00ff00;
+        }
+        .key-page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .key-page.active {
+            display: flex;
+        }
+        .key-input {
+            font-size: 1.5rem;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #00ff00;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="key-page" id="key-page">
+    <h1>Enter Key to Access (dm q283 on discord for a key!)</h1>
+    <input type="text" id="key-input" class="key-input" placeholder="Enter Key" />
+    <button onclick="checkKey()">Submit</button>
+</div>
+
+<div class="container" id="main-page" style="display:none;">
+    <h1 id="detected-device">Detecting device...</h1>
+
+    <!-- Device Selection -->
+    <div class="device-selection">
+        <h2>Select Device</h2>
+        <button onclick="selectDevice('iPhone/iOS Device', 'Apple', false)">iPhone/iOS</button>
+        <button onclick="selectDevice('Android Device', 'Google', false)">Android</button>
+        <button onclick="selectDevice('Windows PC', 'Microsoft', false)">Windows</button>
+        <button onclick="selectDevice('PS3', 'Sony', true)">PS3</button>
+        <button onclick="selectDevice('PS4', 'Sony', true)">PS4</button>
+        <button onclick="selectDevice('PS5', 'Sony', true)">PS5</button>
+        <button onclick="selectDevice('Xbox', 'Microsoft', true)">Xbox</button>
+        <button onclick="selectDevice('Nintendo Switch', 'Nintendo', true)">Nintendo Switch</button>
+        <button onclick="selectDevice('Wii U', 'Nintendo', true)">Wii U</button>
+    </div>
+
+    <!-- Game Mod Selection -->
+    <div class="game-selection">
+        <h2>Mod Menu for Games</h2>
+        <!-- Console-Specific Mod Menus -->
+        <button onclick="startMod('Fortnite')">Fortnite Mod Menu</button>
+        <button onclick="startMod('GTA V')">GTA V Mod Menu</button>
+        <button onclick="startMod('Call of Duty: Warzone')">Warzone Mod Menu</button>
+        <button onclick="startMod('Apex Legends')">Apex Legends Mod Menu</button>
+        <button onclick="startMod('Splatoon (Switch Only)', 'Nintendo Switch')">Splatoon Mod (Switch Only)</button>
+        <button onclick="startMod('Cyberpunk 2077')">Cyberpunk 2077 Mod Menu</button>
+        <button onclick="startMod('Red Dead Redemption 2')">Red Dead Redemption 2 Mod Menu</button>
+    </div>
+
+    <!-- Anti-Cheat Disabler -->
+    <div class="anticheat-selection">
+        <h2>Disable Anti-Cheat</h2>
+        <button onclick="startMod('Vanguard Anti-Cheat Disabler')">Disable Vanguard</button>
+        <button onclick="startMod('EasyAntiCheat Disabler')">Disable EasyAntiCheat</button>
+        <button onclick="startMod('Battleye Anti-Cheat Disabler')">Disable Battleye</button>
+        <button onclick="startMod('Ricochet Anti-Cheat Disabler')">Disable Ricochet</button>
+        <button onclick="startMod('PunkBuster Anti-Cheat Disabler')">Disable PunkBuster</button>
+        <button onclick="startMod('VAC Anti-Cheat Disabler')">Disable VAC (Valve Anti-Cheat)</button>
+    </div>
+</div>
+
+<div class="loading-container" id="loading-container">
+    <div class="code-container">
+        <div id="code"></div>
+    </div>
+    <div class="loading-circle"></div>
+    <div id="payload-message">Payload Injected!</div>
+    <button id="cancel-button" onclick="cancelProcess()">Cancel</button>
+    <button id="exit-button" onclick="exitProcess()">Exit</button>
+</div>
+
+<script>
+    let deviceInfo = { device: 'Unknown Device', maker: 'Unknown Maker', isConsole: false };
+
+    // Key entry check
+    function checkKey() {
+        const keyInput = document.getElementById("key-input").value;
+        if (keyInput === "WebKit") {
+            document.getElementById("key-page").style.display = "none";
+            document.getElementById("main-page").style.display = "block";
+            autoDetectDevice();
+        } else {
+            alert("Incorrect Key!");
+        }
+    }
+
+    // Auto-detect device
+    function autoDetectDevice() {
+        const userAgent = navigator.userAgent;
+        if (/android/i.test(userAgent)) {
+            deviceInfo.device = "Android Device";
+            deviceInfo.maker = "Google";
+        } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+            deviceInfo.device = "iPhone/iOS Device";
+            deviceInfo.maker = "Apple";
+        } else if (/windows/i.test(userAgent)) {
+            deviceInfo.device = "Windows PC";
+            deviceInfo.maker = "Microsoft";
+        } else if (/playstation 5/i.test(userAgent)) {
+            deviceInfo.device = "PS5";
+            deviceInfo.maker = "Sony";
+        } else if (/playstation 4/i.test(userAgent)) {
+            deviceInfo.device = "PS4";
+            deviceInfo.maker = "Sony";
+        } else if (/xbox/i.test(userAgent)) {
+            deviceInfo.device = "Xbox";
+            deviceInfo.maker = "Microsoft";
+        } else {
+            deviceInfo.device = "Unknown Device";
+        }
+        document.getElementById("detected-device").innerText = `Detected: ${deviceInfo.device}`;
+    }
+
+    // Function to manually select device
+    function selectDevice(device, maker, isConsole) {
+        deviceInfo.device = device;
+        deviceInfo.maker = maker;
+        deviceInfo.isConsole = isConsole;
+        alert(`Selected: ${deviceInfo.device}`);
+        document.getElementById("detected-device").innerText = `Selected: ${deviceInfo.device}`;
+    }
+
+    // Function to start mod menu or anti-cheat disable process
+    function startMod(modType) {
+        if (deviceInfo.device === 'Unknown Device') {
+            alert("Please select a device first.");
+            return;
+        }
+
+        const loadingContainer = document.getElementById("loading-container");
+        const payloadMessage = document.getElementById("payload-message");
+        const cancelButton = document.getElementById("cancel-button");
+
+        // Set cancel button text depending on whether it's a console or not
+        cancelButton.innerText = deviceInfo.isConsole ? "Cancel (May cause console to brick!)" : "Cancel";
+
+        // Show loading container and cancel button
+        loadingContainer.classList.add("active");
+        cancelButton.style.display = "block";
+
+        // Simulate mod or anti-cheat disable process with scrolling code effect
+        const codeText = `
+[INFO]: Starting ${modType} on ${deviceInfo.device}...
+[INFO]: Initializing USB interface...
+[INFO]: Found device at 0x2438955. Vendor: ${deviceInfo.maker} Product: ${deviceInfo.device}
+[INFO]: Injecting mod or disabling anti-cheat for ${modType}...
+[INFO]: Checking for bootloader version... 16.0.1 detected.
+[INFO]: Exploit initiated, starting payload injection.
+[INFO]: Patching bootrom... (step 1 of 10)
+[DEBUG]: Overriding memory protection at 0x3000FFAA...
+[DEBUG]: Clearing IOMMU mapping at address range 0x80000000-0x8FFFFFFF
+[INFO]: DMA channel initialized.
+[DEBUG]: Allocating memory for kernel patch. Size: 0x4000 bytes.
+[INFO]: Injecting payload into kernel space...
+[DEBUG]: Writing shellcode to 0x2000ABCD...
+[INFO]: Patching SecureROM...
+[INFO]: Overwriting signature checks...
+[DEBUG]: Disabling signature enforcement.
+[INFO]: Executing secondary payload...
+[DEBUG]: Clearing existing heap allocations...
+[INFO]: Injecting modified kernel cache...
+[DEBUG]: Kernel heap address: 0xFF500000
+[DEBUG]: KASLR slide: 0x8000000
+[INFO]: Relocating system patches...
+[INFO]: Memory map reallocated at 0x90000000-0x9FFFFFFF
+[DEBUG]: Registering USB mass storage interface...
+[INFO]: USB mass storage driver successfully loaded.
+[INFO]: Kernel patch verification successful.
+[INFO]: Bootstrapping launch daemon...
+[DEBUG]: Launching system daemon from /usr/libexec/launchd...
+[INFO]: Setting root privileges...
+[DEBUG]: Escalation of privileges complete.
+[INFO]: Root access obtained.
+[INFO]: Patching file system protections...
+[DEBUG]: Remounting root file system as read-write.
+[INFO]: File system successfully remounted.
+[INFO]: Injecting persistence daemon...
+[DEBUG]: Writing persistence daemon to /Library/LaunchDaemons/com.persistent.exploit.plist
+[INFO]: Persistence layer installed.
+[INFO]: Finalizing exploit...
+[DEBUG]: Verifying payload integrity...
+[INFO]: Exploit successfully completed.
+[INFO]: Rebooting kernel... 
+[INFO]: Device jailbroken successfully. Kernel patched, system ready.
+`;
+
+        const codeElement = document.getElementById('code');
+        codeElement.textContent = codeText;
+
+        let position = 0;
+        const scrollSpeed = 2;
+        const scrollInterval = setInterval(() => {
+            position += scrollSpeed;
+            codeElement.style.transform = `translateY(-${position}px)`;
+
+            if (position >= codeElement.scrollHeight) {
+                clearInterval(scrollInterval);
+                cancelButton.style.display = "none"; // Hide cancel button
+                payloadMessage.style.display = "block"; // Show payload injected message
+                document.getElementById('exit-button').style.display = "block"; // Show exit button
+            }
+        }, 50); // Adjust the speed of scrolling
+    }
+
+    // Function to cancel the process
+    function cancelProcess() {
+        alert("Process canceled.");
+        resetUI();
+    }
+
+    // Function to exit after process is completed
+    function exitProcess() {
+        alert("Exiting...");
+        resetUI();
+    }
+
+    // Reset UI to initial state
+    function resetUI() {
+        const loadingContainer = document.getElementById("loading-container");
+        const codeElement = document.getElementById('code');
+        const payloadMessage = document.getElementById('payload-message');
+        const cancelButton = document.getElementById('cancel-button');
+        const exitButton = document.getElementById('exit-button');
+
+        // Reset all elements
+        loadingContainer.classList.remove("active");
+        codeElement.textContent = "";
+        payloadMessage.style.display = "none";
+        cancelButton.style.display = "none";
+        exitButton.style.display = "none";
+        codeElement.style.transform = "translateY(0)";
+    }
+
+    // Run auto-detect when the page is accessed after key entry
+    window.onload = function() {
+        document.getElementById("key-page").style.display = "flex";
+    }
+</script>
+
+</body>
+</html>
